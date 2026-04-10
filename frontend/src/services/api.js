@@ -152,7 +152,7 @@ export const recognitionAPI = {
 
 export const dashboardAPI = {
   getSummary: async () => {
-    return fetchHandler('/dashboard/summary');
+    return fetchHandler('/dashboard/stats');
   }
 };
 

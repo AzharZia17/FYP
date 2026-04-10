@@ -45425,3 +45425,6 @@ NameError: name 'base_dir' is not defined
 2026-04-10 08:49:52,428 - smart_attendance - INFO - Database tables created successfully.
 2026-04-10 09:12:08,504 - smart_attendance - INFO - Database tables created successfully.
 2026-04-10 09:12:29,351 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 09:34:41,310 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 11:46:25,752 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 11:46:49,113 - smart_attendance - INFO - Database tables created successfully.

@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from app.database.database import get_db, engine, Base
-from app.routes import auth, dataset, attendance, dashboard, students, recognition
+from app.routes import auth, students, attendance, dataset, recognition, dashboard
 from app.models import User, Student, Attendance, FaceEncoding, Log, Camera, Notification, Report  # Import all models for Base.metadata.create_all
 
 # Ensure logs directory exists
