@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+bcrypt
+face-recognition
+requests
+python-multipart
+python-dotenv
+pydantic
+pydantic[email]
+opencv-python
+python-jose[cryptography]
+passlib[bcrypt]

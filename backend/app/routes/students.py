@@ -1,0 +1,88 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from typing import List
+
+from app.database.database import get_db
+from app.models.student import Student
+from app.utils.schemas import StudentCreate, StudentUpdate, StudentResponse
+
+router = APIRouter(
+    prefix="/api/students",
+    tags=["Students"]
+)
+
+@router.get("/", response_model=List[StudentResponse])
+def get_students(db: Session = Depends(get_db)):
+    """
+    Fetch all student records from the database.
+    """
+    return db.query(Student).all()
+
+@router.get("/{student_id}", response_model=StudentResponse)
+def get_student(student_id: int, db: Session = Depends(get_db)):
+    """
+    Fetch a single student by their internal ID.
+    """
+    student = db.query(Student).filter(Student.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    return student
+
+@router.post("/", response_model=StudentResponse, status_code=status.HTTP_201_CREATED)
+def create_student(student_data: StudentCreate, db: Session = Depends(get_db)):
+    """
+    Create a new student record.
+    """
+    # Check if roll number already exists
+    existing = db.query(Student).filter(Student.roll_number == student_data.roll_number).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Student with this ID/Roll Number already exists.")
+    
+    new_student = Student(
+        name=student_data.name,
+        roll_number=student_data.roll_number,
+        department=student_data.department
+    )
+    db.add(new_student)
+    db.commit()
+    db.refresh(new_student)
+    return new_student
+
+@router.put("/{student_id}", response_model=StudentResponse)
+def update_student(student_id: int, student_data: StudentUpdate, db: Session = Depends(get_db)):
+    """
+    Update details of an existing student.
+    """
+    student = db.query(Student).filter(Student.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    # Update fields if provided
+    if student_data.name is not None:
+        student.name = student_data.name
+    if student_data.roll_number is not None:
+        # Check uniqueness if roll number is changing
+        if student_data.roll_number != student.roll_number:
+            existing = db.query(Student).filter(Student.roll_number == student_data.roll_number).first()
+            if existing:
+                raise HTTPException(status_code=400, detail="New Roll Number is already assigned to another student.")
+        student.roll_number = student_data.roll_number
+    if student_data.department is not None:
+        student.department = student_data.department
+
+    db.commit()
+    db.refresh(student)
+    return student
+
+@router.delete("/{student_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_student(student_id: int, db: Session = Depends(get_db)):
+    """
+    Permanently delete a student and their associated data (cascade).
+    """
+    student = db.query(Student).filter(Student.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    db.delete(student)
+    db.commit()
+    return None
