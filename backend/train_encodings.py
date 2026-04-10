@@ -53,10 +53,13 @@ def compile_dataset():
                 print(f"[ERROR] Student record not found for folder '{folder_name}'. Skipping.")
                 continue
 
+            # Check if student already has encodings to avoid redundant work
+            existing_encodings_count = db.query(FaceEncoding).filter(FaceEncoding.student_id == student.id).count()
+            if existing_encodings_count > 0:
+                print(f"[SKIP] Student {student.name} already has {existing_encodings_count} encodings. Skipping.")
+                continue
+
             print(f"\nTraining Model for: {student.name} (ID: {student.id}) | Images: {len(images)}")
-            
-            # Clear old encodings for this student before re-training
-            db.query(FaceEncoding).filter(FaceEncoding.student_id == student.id).delete()
             
             for index, filename in enumerate(images):
                 if filename.lower().endswith(('.png', '.jpg', '.jpeg')):

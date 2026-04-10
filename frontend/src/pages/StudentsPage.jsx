@@ -151,7 +151,7 @@ const StudentsPage = () => {
                         </div>
                       </td>
                       <td className="px-6 py-5 text-right">
-                        <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex justify-end gap-2">
                           <button 
                             onClick={() => handleEdit(student)}
                             className="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all"

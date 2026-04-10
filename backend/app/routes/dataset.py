@@ -47,6 +47,9 @@ def capture_dataset(request: CaptureRequest):
             detail=str(e)
         )
 
+# Add project root for directory resolution
+base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 class FrameUploadRequest(BaseModel):
     student_id: int
     image_data: str # base64
@@ -81,8 +84,12 @@ def upload_frame(request: FrameUploadRequest, db: Session = Depends(get_db)):
             raise HTTPException(status_code=400, detail="Invalid frame data")
 
         # 4. Save frame
-        file_path = os.path.join(dataset_dir, f"{student_name_clean}_{request.frame_number}.jpg")
+        # Using student.name for filename clarity but student.id for folder structure
+        clean_name = student.name.replace(" ", "_").lower()
+        file_path = os.path.join(dataset_dir, f"{clean_name}_{request.frame_number}.jpg")
         cv2.imwrite(file_path, frame)
+
+        return {"status": "success", "file": file_path}
 
         return {"status": "success", "file": file_path}
     except Exception as e:

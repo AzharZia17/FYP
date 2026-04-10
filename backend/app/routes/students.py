@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
+import os
 
 from app.database.database import get_db
 from app.models.student import Student
@@ -78,11 +79,29 @@ def update_student(student_id: int, student_data: StudentUpdate, db: Session = D
 def delete_student(student_id: int, db: Session = Depends(get_db)):
     """
     Permanently delete a student and their associated data (cascade).
+    Also cleans up the visual dataset on disk.
     """
     student = db.query(Student).filter(Student.id == student_id).first()
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
     
-    db.delete(student)
-    db.commit()
+    # 1. Calculate dataset directory for cleanup
+    # Matches the structure used in upload-frame
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    dataset_path = os.path.join(base_dir, "dataset", str(student.id))
+
+    try:
+        # 2. Database deletion (Cascade handles Logs/Attendance)
+        db.delete(student)
+        db.commit()
+
+        # 3. Filesystem cleanup
+        import shutil
+        if os.path.exists(dataset_path):
+            shutil.rmtree(dataset_path)
+            
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to delete student: {str(e)}")
+
     return None

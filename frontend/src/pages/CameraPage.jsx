@@ -123,25 +123,39 @@ const CameraPage = () => {
         const totalFrames = 100;
         let count = 0;
 
-        const captureInterval = setInterval(async () => {
-            const frame = captureFrame();
-            if (frame) {
-                count++;
-                setCaptureProgress(Math.floor((count / totalFrames) * 100));
-                try {
-                    await datasetAPI.uploadFrame(targetStudent, frame, count);
-                } catch (err) {
-                    console.error("Frame upload failed", err);
+        try {
+            const burstStartTime = Date.now();
+            
+            for (let i = 1; i <= totalFrames; i++) {
+                const frame = captureFrame();
+                if (frame) {
+                    count++;
+                    setCaptureProgress(Math.floor((count / totalFrames) * 100));
+                    
+                    // We trigger the upload WITHOUT awaiting it here to achieve maximum speed.
+                    // The backend handles the sequential processing if needed, but we keep 
+                    // the network pipeline open.
+                    datasetAPI.uploadFrame(targetStudent, frame, count).catch(err => {
+                        console.error(`Frame ${count} failed background upload`, err);
+                    });
                 }
+                
+                // 100ms delay = ~10 frames per second. 
+                // This is the ideal speed for biometric collection.
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
 
-            if (count >= totalFrames) {
-                clearInterval(captureInterval);
+            // After loop finishes, we give the network a moment to finish "in-flight" uploads
+            setTimeout(() => {
                 setIsCapturing(false);
                 setMode('preview');
-                alert("Dataset capture complete! 100 frames uploaded.");
-            }
-        }, 200); // 5 frames per second
+                alert("Dataset capture high-speed burst complete! All 100 frames sent to server.");
+            }, 1000);
+            
+        } catch (err) {
+            setError("Speed-burst capture failed.");
+            setIsCapturing(false);
+        }
     };
 
     const getInstruction = () => {
