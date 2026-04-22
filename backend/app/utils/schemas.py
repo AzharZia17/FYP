@@ -33,6 +33,8 @@ class StudentBase(BaseModel):
     name: str
     roll_number: str
     department: Optional[str] = None
+    semester: Optional[int] = 1
+    section: Optional[str] = "A"
 
 class StudentCreate(StudentBase):
     pass
@@ -41,6 +43,8 @@ class StudentUpdate(BaseModel):
     name: Optional[str] = None
     roll_number: Optional[str] = None
     department: Optional[str] = None
+    semester: Optional[int] = None
+    section: Optional[str] = None
 
 class StudentResponse(StudentBase):
     id: int

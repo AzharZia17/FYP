@@ -4,7 +4,7 @@ import { ScanFace } from 'lucide-react';
 
 const Navbar = () => {
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -23,7 +23,7 @@ const Navbar = () => {
               SmartAttend
             </span>
           </Link>
-          
+
           <div className="flex items-center gap-4">
             <Link to="/login" className="text-slate-300 hover:text-white transition-colors text-sm font-medium">
               Log in

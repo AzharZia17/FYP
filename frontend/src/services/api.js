@@ -1,20 +1,21 @@
 // Dynamically pull Base URL falling back to typical local dev environment
 // Note: Supports Vite (import.meta.env), Next.js (process.env), and static configurations.
-export const BASE_URL = (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL) || 
-                 (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) || 
-                 'http://127.0.0.1:8000/api';
+export const BASE_URL = (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL) ||
+  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) ||
+  'http://127.0.0.1:8000/api';
 
 /**
  * Core centralized wrapper for executing managed fetch calls
  */
 async function fetchHandler(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
-  const maxRetries = options.method === 'POST' ? 3 : 1; 
+  const maxRetries = options.method === 'POST' ? 3 : 1;
   let lastError;
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const response = await fetch(url, {
+        cache: 'no-store', // Prevent browser caching (fixes subsequent calls issue)
         ...options,
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +53,7 @@ export const authAPI = {
       body: JSON.stringify({ email, password })
     });
   },
-  
+
   register: async (userData) => {
     return fetchHandler('/auth/signup', {
       method: 'POST',
@@ -110,19 +111,22 @@ export const attendanceAPI = {
       body: JSON.stringify({ student_id, confidence })
     });
   },
-  
+
   getTodaysLogs: async () => {
     return fetchHandler('/attendance/today');
   },
 
-  getLogs: async ({ date, student_id } = {}) => {
+  getLogs: async ({ date, student_id, department, semester } = {}) => {
     let params = new URLSearchParams();
     if (date) params.append('date', date);
     if (student_id) params.append('student_id', student_id);
+    if (department) params.append('department', department);
+    if (semester) params.append('semester', semester);
+    
     const query = params.toString() ? `?${params.toString()}` : '';
     return fetchHandler(`/attendance/logs${query}`);
   },
-  
+
   generateReport: async (startDate, endDate) => {
     return fetchHandler(`/attendance/report?startDate=${startDate}&endDate=${endDate}`);
   }
@@ -153,6 +157,12 @@ export const recognitionAPI = {
 export const dashboardAPI = {
   getSummary: async () => {
     return fetchHandler('/dashboard/stats');
+  },
+  getDepartmentStats: async () => {
+    return fetchHandler('/dashboard/department-stats');
+  },
+  getSemesterStats: async (department) => {
+    return fetchHandler(`/dashboard/semester-stats?department=${encodeURIComponent(department)}`);
   }
 };
 

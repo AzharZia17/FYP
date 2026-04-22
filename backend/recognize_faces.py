@@ -9,6 +9,7 @@ import face_recognition
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 from datetime import datetime, date
+import threading
 
 # Add backend directory to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -63,7 +64,7 @@ def load_encodings():
         known_face_ids = []
         
         for record in records:
-            # Convert DB JSON list back to numpy array
+            # Convert DB JSON array back to numpy array directly
             encoding_array = np.array(record.encoding)
             known_face_encodings.append(encoding_array)
             known_face_names.append(record.student.name)
@@ -124,8 +125,8 @@ def main():
 
             # Only process every other frame of video to save time
             if process_this_frame:
-                # Resize frame of video to 1/5 size (0.2) for aggressive performance
-                small_frame = cv2.resize(frame, (0, 0), fx=0.2, fy=0.2)
+                # Resize frame of video to 1/2 size (0.5) for aggressive performance but reliable multi-face
+                small_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
                 # Convert from BGR (OpenCV) to RGB (face_recognition)
                 rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
                 
@@ -169,20 +170,37 @@ def main():
             batch_to_mark = []
             
             for (top, right, bottom, left), name, confidence, matched_id in zip(face_locations, face_names, face_confidences, face_matched_ids):
-                # Scale back up (1 / 0.2 = 5)
-                top *= 5
-                right *= 5
-                bottom *= 5
-                left *= 5
+                # Status and Color Logic
+                status_text = "Unknown"
+                color = (0, 0, 255) # Red (BGR)
+
+                if name != "Unknown":
+                    if confidence < 60.0:
+                        status_text = "Low Confidence"
+                        color = (0, 165, 255) # Orange (BGR)
+                    elif matched_id in last_marked_time:
+                        status_text = "Already Marked"
+                        color = (0, 255, 0) # Green (BGR)
+                    else:
+                        status_text = "Recognized"
+                        color = (0, 255, 0) # Green (BGR)
+
+                # Scale back up (1 / 0.5 = 2)
+                top *= 2
+                right *= 2
+                bottom *= 2
+                left *= 2
 
                 # Draw a box around the face
-                color = (0, 255, 0) if name != "Unknown" else (0, 0, 255)
                 cv2.rectangle(frame, (left, top), (right, bottom), color, 2)
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom + 5), color, cv2.FILLED)
                 
-                # Format text: Name (XX.X%) OR Unknown
-                label = f"{name} ({confidence:.1f}%)" if name != "Unknown" else "Unknown"
-                cv2.putText(frame, label, (left + 6, bottom - 6), cv2.FONT_HERSHEY_DUPLEX, 0.7, (255, 255, 255), 1)
+                # Format text: Name (Confidence%) - Status
+                label = f"{name} ({confidence:.0f}%)" if name != "Unknown" else "Unknown"
+                status_label = f"[{status_text}]"
+                
+                cv2.putText(frame, label, (left + 6, bottom - 20), cv2.FONT_HERSHEY_DUPLEX, 0.6, (255, 255, 255), 1)
+                cv2.putText(frame, status_label, (left + 6, bottom - 5), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1)
 
                 # 5. Collect Identifications for Batching
                 if name != "Unknown" and matched_id is not None:
@@ -214,22 +232,28 @@ def main():
 
             # 7. Execute Batch Marking if needed (After processing all faces in frame)
             if batch_to_mark:
-                try:
-                    BATCH_API_URL = "http://127.0.0.1:8000/api/attendance/mark-batch"
-                    payload = {"records": [{"student_id": b["student_id"], "confidence": b["confidence"]} for b in batch_to_mark]}
-                    response = session.post(BATCH_API_URL, json=payload, timeout=5)
-                    
-                    if response.status_code == 200:
-                        data = response.json()
-                        for result in data.get("results", []):
-                            if result["status"] == "success":
-                                sid = result["student_id"]
-                                last_marked_time[sid] = current_loop_time
-                                logger.info(f"[BATCH SUCCESS] Recorded ID: {sid}")
-                    else:
-                        logger.error(f"[BATCH ERROR] API returned {response.status_code}")
-                except Exception as e:
-                    logger.error(f"[NETWORK ERROR] Failed to send batch: {e}")
+                def send_batch(batch, mark_time_dict, loop_time):
+                    try:
+                        BATCH_API_URL = "http://127.0.0.1:8000/api/attendance/mark-batch"
+                        payload = {"records": [{"student_id": b["student_id"], "confidence": b["confidence"]} for b in batch]}
+                        response = session.post(BATCH_API_URL, json=payload, timeout=5)
+                        
+                        if response.status_code == 200:
+                            data = response.json()
+                            for result in data.get("results", []):
+                                if result["status"] == "success":
+                                    sid = result["student_id"]
+                                    mark_time_dict[sid] = loop_time
+                                    logger.info(f"[BATCH SUCCESS] Recorded ID: {sid}")
+                        else:
+                            logger.error(f"[BATCH ERROR] API returned {response.status_code}")
+                    except Exception as e:
+                        logger.error(f"[NETWORK ERROR] Failed to send batch: {e}")
+
+                # Launch network request in background to prevent OpenCV stutter
+                thread = threading.Thread(target=send_batch, args=(batch_to_mark, last_marked_time, current_loop_time))
+                thread.daemon = True
+                thread.start()
 
             # Show the resulting image
             cv2.imshow('Smart Attendance - Real-time Recognition', frame)

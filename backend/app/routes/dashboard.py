@@ -77,3 +77,61 @@ def get_dashboard_stats(db: Session = Depends(get_db)):
         "weekly_trend": weekly_trend,
         "distribution": distribution
     }
+
+@router.get("/department-stats")
+def get_department_stats(db: Session = Depends(get_db)):
+    """
+    Returns statistics grouped by department.
+    """
+    results = []
+    departments = db.query(Student.department).distinct().all()
+    today = date.today()
+    
+    for (dept,) in departments:
+        if not dept: continue
+        
+        total = db.query(Student).filter(Student.department == dept).count()
+        today_att = db.query(Attendance).join(Student).filter(
+            Student.department == dept, 
+            Attendance.date == today
+        ).count()
+        
+        results.append({
+            "department": dept,
+            "total": total,
+            "present": today_att,
+            "absent": max(0, total - today_att)
+        })
+    
+    return results
+
+@router.get("/semester-stats")
+def get_semester_stats(department: str, db: Session = Depends(get_db)):
+    """
+    Returns statistics grouped by semester for a specific department.
+    """
+    results = []
+    today = date.today()
+    
+    for sem in range(1, 9):
+        total = db.query(Student).filter(
+            Student.department == department,
+            Student.semester == sem
+        ).count()
+        
+        if total == 0: continue
+        
+        today_att = db.query(Attendance).join(Student).filter(
+            Student.department == department,
+            Student.semester == sem,
+            Attendance.date == today
+        ).count()
+        
+        results.append({
+            "semester": sem,
+            "total": total,
+            "present": today_att,
+            "absent": max(0, total - today_att)
+        })
+        
+    return results

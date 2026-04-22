@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -12,6 +12,9 @@ class FaceEncoding(Base):
     
     # Store the 128-dimensional face encoding vector as a PostgreSQL JSON
     encoding = Column(JSON, nullable=False)
+    
+    # Optional image name to track which file this encoding belongs to
+    image_name = Column(String, nullable=True)
     
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 

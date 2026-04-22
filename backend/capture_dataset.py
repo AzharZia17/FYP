@@ -130,6 +130,8 @@ def main():
             break
 
     print(f"\nCapture complete! {count} images saved for Student ID: {student_id}.")
+    print("\n[IMPORTANT] To update the database with these new faces, you MUST run:")
+    print("python backend/train_encodings.py")
 
     cap.release()
     cv2.destroyAllWindows()

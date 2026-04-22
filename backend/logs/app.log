@@ -45428,3 +45428,497 @@ NameError: name 'base_dir' is not defined
 2026-04-10 09:34:41,310 - smart_attendance - INFO - Database tables created successfully.
 2026-04-10 11:46:25,752 - smart_attendance - INFO - Database tables created successfully.
 2026-04-10 11:46:49,113 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 12:09:00,540 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 12:09:47,542 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 12:10:01,501 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 12:10:21,134 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 15:16:08,393 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 15:16:18,721 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 15:18:58,352 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 21:48:02,521 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 22:44:30,802 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 22:49:33,264 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 22:56:10,123 - smart_attendance - INFO - Database tables created successfully.
+2026-04-10 23:01:21,944 - smart_attendance - INFO - Database tables created successfully.
+2026-04-15 11:47:10,994 - smart_attendance - INFO - Database tables created successfully.
+2026-04-15 11:57:17,147 - smart_attendance - INFO - Database tables created successfully.
+2026-04-15 12:30:56,138 - smart_attendance - INFO - Database tables created successfully.
+2026-04-15 12:41:23,548 - smart_attendance - INFO - Database tables created successfully.
+2026-04-16 16:06:57,157 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 11:11:02,539 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 11:34:16,755 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 14:40:08,685 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 15:07:08,889 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 15:11:39,537 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 16:00:00,504 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 16:00:57,902 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 16:07:30,276 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 16:26:36,699 - smart_attendance - ERROR - Unhandled Exception: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "ix_students_roll_number"
+DETAIL:  Key (roll_number)=(22081519-005) already exists.
+
+[SQL: INSERT INTO students (name, roll_number, department, semester, section) VALUES (%(name)s, %(roll_number)s, %(department)s, %(semester)s, %(section)s) RETURNING students.id, students.created_at]
+[parameters: {'name': 'Subhan Ahmad ', 'roll_number': '22081519-005', 'department': 'Computer Science', 'semester': 8, 'section': 'A'}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-04-18 16:26:39,252 - smart_attendance - ERROR - Traceback (most recent call last):
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "ix_students_roll_number"
+DETAIL:  Key (roll_number)=(22081519-005) already exists.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 120, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 106, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 430, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 318, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\anyio\_backends\_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\anyio\_backends\_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "E:\faceAttendance\backend\app\routes\students.py", line 60, in create_student
+    db.commit()
+    ~~~~~~~~~^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 1311, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 1286, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 4331, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 4466, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 4427, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.IntegrityError: (psycopg2.errors.UniqueViolation) duplicate key value violates unique constraint "ix_students_roll_number"
+DETAIL:  Key (roll_number)=(22081519-005) already exists.
+
+[SQL: INSERT INTO students (name, roll_number, department, semester, section) VALUES (%(name)s, %(roll_number)s, %(department)s, %(semester)s, %(section)s) RETURNING students.id, students.created_at]
+[parameters: {'name': 'Subhan Ahmad ', 'roll_number': '22081519-005', 'department': 'Computer Science', 'semester': 8, 'section': 'A'}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+
+2026-04-18 16:48:14,271 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 17:04:57,430 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 17:14:27,419 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 17:14:27,420 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 17:49:32,510 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 17:49:32,666 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 17:49:42,270 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 17:49:42,426 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 18:30:06,750 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 18:30:14,009 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 18:35:40,320 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 18:35:47,894 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 18:35:51,568 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 18:36:07,704 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 18:36:17,277 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 18:38:03,542 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 18:50:52,502 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 18:51:25,326 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 18:52:04,381 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 18:52:18,056 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 19:30:07,016 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 20:09:00,870 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 20:12:19,581 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 20:14:21,569 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 20:19:55,659 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 20:27:21,233 - smart_attendance - INFO - Database tables created successfully.
+2026-04-18 20:28:13,948 - smart_attendance - INFO - Database tables created successfully.
+2026-04-19 00:25:40,489 - smart_attendance - INFO - Database tables created successfully.
+2026-04-19 00:32:00,750 - smart_attendance - INFO - Database tables created successfully.
+2026-04-19 15:29:05,104 - smart_attendance - INFO - Database tables created successfully.
+2026-04-19 15:46:33,424 - smart_attendance - INFO - Database tables created successfully.
+2026-04-19 15:46:49,213 - smart_attendance - INFO - Database tables created successfully.
+2026-04-19 15:47:00,729 - smart_attendance - INFO - Database tables created successfully.
+2026-04-19 15:47:01,052 - app.routes.auth - INFO - Login attempt for user: azharzia01@gmail.com
+2026-04-19 15:47:01,129 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-04-19 15:47:01,285 - app.routes.auth - WARNING - Login failed: Incorrect password for user azharzia01@gmail.com.
+2026-04-19 15:47:10,805 - app.routes.auth - INFO - Login attempt for user: test@test.com
+2026-04-19 15:47:10,811 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-04-19 15:47:10,827 - app.routes.auth - WARNING - Login failed: Incorrect password for user test@test.com.
+2026-04-19 15:47:48,739 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-04-19 15:47:48,756 - smart_attendance - ERROR - Unhandled Exception: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+2026-04-19 15:47:49,095 - smart_attendance - ERROR - Traceback (most recent call last):
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 120, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 106, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 430, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 318, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\anyio\_backends\_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\anyio\_backends\_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "E:\faceAttendance\backend\app\routes\auth.py", line 28, in signup
+    hashed_password = security.get_password_hash(user_data.password)
+  File "E:\faceAttendance\backend\app\core\security.py", line 37, in get_password_hash
+    return pwd_context.hash(password)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\context.py", line 2258, in hash
+    return record.hash(secret, **kwds)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 779, in hash
+    self.checksum = self._calc_checksum(secret)
+                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 591, in _calc_checksum
+    self._stub_requires_backend()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 2254, in _stub_requires_backend
+    cls.set_backend()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 2156, in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 2163, in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 2188, in set_backend
+    cls._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 2311, in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 2224, in _set_backend
+    ok = loader(**kwds)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 626, in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 421, in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+       ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 380, in detect_wrap_bug
+    if verify(secret, bug_hash):
+       ~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 792, in verify
+    return consteq(self._calc_checksum(secret), chk)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 655, in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+
+2026-04-19 15:49:16,711 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-04-19 15:49:16,731 - smart_attendance - ERROR - Unhandled Exception: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+2026-04-19 15:49:16,749 - smart_attendance - ERROR - Traceback (most recent call last):
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 120, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 106, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 430, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 318, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\anyio\to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\anyio\_backends\_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\anyio\_backends\_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "E:\faceAttendance\backend\app\routes\auth.py", line 28, in signup
+    hashed_password = security.get_password_hash(user_data.password)
+  File "E:\faceAttendance\backend\app\core\security.py", line 37, in get_password_hash
+    return pwd_context.hash(password)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\context.py", line 2258, in hash
+    return record.hash(secret, **kwds)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 779, in hash
+    self.checksum = self._calc_checksum(secret)
+                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 591, in _calc_checksum
+    self._stub_requires_backend()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 2254, in _stub_requires_backend
+    cls.set_backend()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 2156, in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 2163, in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 2188, in set_backend
+    cls._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 2311, in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 2224, in _set_backend
+    ok = loader(**kwds)
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 626, in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 421, in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+       ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 380, in detect_wrap_bug
+    if verify(secret, bug_hash):
+       ~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\utils\handlers.py", line 792, in verify
+    return consteq(self._calc_checksum(secret), chk)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\azhar\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 655, in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+
+2026-04-19 15:49:43,744 - smart_attendance - INFO - Database tables created successfully.
+2026-04-19 15:50:01,765 - app.routes.auth - INFO - Login attempt for user: admin2@test.com
+2026-04-19 15:50:02,319 - app.routes.auth - INFO - Login successful for user: admin2@test.com
+2026-04-19 15:50:39,308 - app.routes.auth - INFO - Login attempt for user: admin123@gmail.com
+2026-04-19 15:50:40,153 - app.routes.auth - INFO - Login successful for user: admin123@gmail.com
+2026-04-19 15:51:14,984 - app.routes.auth - INFO - Login attempt for user: junaid890@gmail.com
+2026-04-19 15:51:15,755 - app.routes.auth - INFO - Login successful for user: junaid890@gmail.com
+2026-04-22 10:55:33,281 - smart_attendance - INFO - Database tables created successfully.
+2026-04-22 10:57:35,322 - app.routes.auth - INFO - Login attempt for user: admin123@gmail.com
+2026-04-22 10:57:35,979 - app.routes.auth - INFO - Login successful for user: admin123@gmail.com
+2026-04-22 15:59:21,967 - app.routes.auth - INFO - Login attempt for user: admin123@gmail.com
+2026-04-22 15:59:24,125 - app.routes.auth - INFO - Login successful for user: admin123@gmail.com
+2026-04-22 16:08:12,221 - app.routes.auth - INFO - Login attempt for user: admin123@gmail.com
+2026-04-22 16:08:13,963 - app.routes.auth - INFO - Login successful for user: admin123@gmail.com
+2026-04-22 16:10:16,424 - app.routes.auth - INFO - Login attempt for user: admin123@gmail.com
+2026-04-22 16:10:17,571 - app.routes.auth - INFO - Login successful for user: admin123@gmail.com
+2026-04-22 16:13:03,740 - smart_attendance - INFO - Database tables created successfully.
+2026-04-22 16:14:10,131 - app.routes.auth - INFO - Login attempt for user: admin123@gmail.com
+2026-04-22 16:14:14,122 - app.routes.auth - INFO - Login successful for user: admin123@gmail.com
+2026-04-22 16:24:39,079 - smart_attendance - INFO - Database tables created successfully.

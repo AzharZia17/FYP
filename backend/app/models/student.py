@@ -10,6 +10,8 @@ class Student(Base):
     name = Column(String)
     roll_number = Column(String, unique=True, index=True)
     department = Column(String, nullable=True) # Supported academic category
+    semester = Column(Integer, default=1)      # Current semester (1-8)
+    section = Column(String, default='A')       # Current section (A, B, C)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationship to Attendance

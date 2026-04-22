@@ -192,17 +192,25 @@ async def mark_attendance_batch(request: BatchMarkRequest, db: Session = Depends
 def get_attendance_logs(
     date: Optional[date] = None, 
     student_id: Optional[int] = None, 
+    department: Optional[str] = None,
+    semester: Optional[int] = None,
     db: Session = Depends(get_db)
 ):
     """
     Fetch and filter attendance logs from the database.
+    Supports granular filtering by date, student, department, and semester.
     """
-    query = db.query(Attendance)
+    # Join with Student to allow filtering by student metadata
+    query = db.query(Attendance).join(Student)
     
     if date:
         query = query.filter(Attendance.date == date)
     if student_id:
         query = query.filter(Attendance.student_id == student_id)
+    if department:
+        query = query.filter(Student.department == department)
+    if semester:
+        query = query.filter(Student.semester == semester)
         
     # Order by most recent logs first
     return query.order_by(Attendance.time.desc()).all()

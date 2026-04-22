@@ -32,9 +32,9 @@ const SignupPage = () => {
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col items-center">
       <Navbar />
-      
+
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 flex items-center justify-center mt-16 py-8">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
@@ -104,8 +104,8 @@ const SignupPage = () => {
               </div>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isLoading}
               className="w-full btn-primary bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 flex items-center justify-center gap-2 py-3 mt-4 disabled:opacity-70 disabled:cursor-not-allowed"
             >

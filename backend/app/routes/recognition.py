@@ -7,76 +7,116 @@ import face_recognition
 import time
 from typing import List, Dict, Any, Optional
 from datetime import date
+from collections import defaultdict
 
 from app.database.database import get_db, SessionLocal
 from app.models.student import Student
 from app.models.face_encoding import FaceEncoding
-# from app.routes.attendance import mark_attendance, AttendanceMarkRequest
+from app.models.attendance import Attendance
 
 router = APIRouter(
     prefix="/api/recognition",
     tags=["Recognition"]
 )
 
-# Global cache for encodings to avoid DB hit every 1s
+class SessionMarkedStudents:
+    def __init__(self):
+        self.marked_today = set()
+        self.current_date = date.today()
+
+    def check_refresh(self):
+        if date.today() != self.current_date:
+            self.marked_today = set()
+            self.current_date = date.today()
+
+    def add(self, student_id: int):
+        self.check_refresh()
+        self.marked_today.add(student_id)
+
+    def is_marked(self, student_id: int, db: Session) -> bool:
+        self.check_refresh()
+        if student_id in self.marked_today:
+            return True
+        
+        exists = db.query(Attendance).filter(
+            Attendance.student_id == student_id,
+            Attendance.date == self.current_date
+        ).first() is not None
+        
+        if exists:
+            self.marked_today.add(student_id)
+        return exists
+
+marked_cache = SessionMarkedStudents()
+
 class EncodingsCache:
     def __init__(self):
         self.known_face_encodings = []
         self.known_face_names = []
         self.known_face_ids = []
-        self.last_updated = 0
-        self.TTL = 60  # Cache for 60 seconds
+        self.loaded = False
 
     def refresh(self):
         db = SessionLocal()
         try:
-            # Only pull student IDs that have encodings to keep the join tight
-            records = db.query(FaceEncoding).options(
-                # Ensure the student relation is joined efficiently
-            ).all()
+            records = db.query(FaceEncoding).all()
             
-            self.known_face_encodings = [np.array(r.encoding) for r in records]
-            self.known_face_names = [r.student.name for r in records]
-            self.known_face_ids = [r.student.id for r in records]
-            self.last_updated = time.time()
-            print(f"[CACHE] Refreshed {len(self.known_face_encodings)} face encodings.")
+            # Limit encodings per user to 5 to optimize distance calculations
+            user_encodings = defaultdict(list)
+            for r in records:
+                if len(user_encodings[r.student.id]) < 5:
+                    user_encodings[r.student.id].append(r)
+            
+            self.known_face_encodings = []
+            self.known_face_names = []
+            self.known_face_ids = []
+            
+            for student_id, encs in user_encodings.items():
+                for r in encs:
+                    self.known_face_encodings.append(np.array(r.encoding))
+                    self.known_face_names.append(r.student.name)
+                    self.known_face_ids.append(student_id)
+            
+            self.loaded = True
         finally:
             db.close()
 
     def get_data(self):
-        if time.time() - self.last_updated > self.TTL:
+        if not self.loaded:
             self.refresh()
         return self.known_face_encodings, self.known_face_names, self.known_face_ids
 
 cache = EncodingsCache()
+
+recognition_cooldowns = {}
+COOLDOWN_SECONDS = 3
 
 @router.post("/identify")
 async def identify_face(
     image_data: str = Body(..., embed=True), 
     db: Session = Depends(get_db)
 ):
-    """
-    Identifies a face from a base64 encoded image frame.
-    """
+    global recognition_cooldowns
+
     try:
-        # 1. Decode base64 image
         if "," in image_data:
             image_data = image_data.split(",")[1]
         
-        header, encoded = image_data.split(",", 1) if "," in image_data else (None, image_data)
-        image_bytes = base64.b64decode(encoded)
+        image_bytes = base64.b64decode(image_data)
         nparr = np.frombuffer(image_bytes, np.uint8)
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
         if frame is None:
             raise HTTPException(status_code=400, detail="Invalid image data")
 
-        # 2. Process for recognition (Downscale for speed)
+        # Process every frame that the client sends. The client manages its own FPS/setInterval.
+        # Resize frames for performance but keep resolution high enough for multiple small faces
         small_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
         rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
 
-        # 3. Detect and Encode
-        face_locations = face_recognition.face_locations(rgb_small_frame)
+        # Uses HOG which is a fast face detection model
+        # For even higher accuracy, users should ensure training images are diverse
+        face_locations = face_recognition.face_locations(rgb_small_frame, model="hog")
         face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
 
         known_encs, known_names, known_ids = cache.get_data()
@@ -86,35 +126,61 @@ async def identify_face(
             name = "Unknown"
             confidence = 0.0
             student_id = None
+            status_text = "Unknown Face"
+            color = "#ef4444" 
             
             if known_encs:
+                # 1. Get distances to all known encodings
                 face_distances = face_recognition.face_distance(known_encs, face_encoding)
-                best_match_index = np.argmin(face_distances)
                 
-                if face_distances[best_match_index] <= 0.4: # Tolerance 0.4 (lower is stricter)
-                    similarity = max(0.0, (1.0 - face_distances[best_match_index])) * 100.0
-                    name = known_names[best_match_index]
-                    confidence = similarity
-                    student_id = known_ids[best_match_index]
+                # 2. Find best match
+                if len(face_distances) > 0:
+                    best_match_index = np.argmin(face_distances)
+                    best_dist = face_distances[best_match_index]
+                    
+                    # 3. Dynamic Thresholding (0.5 is a good balance for accuracy vs recall)
+                    # Anything below 0.4 is a VERY strong match, above 0.6 is weak.
+                    THRESHOLD = 0.5 
+                    
+                    if best_dist < THRESHOLD:
+                        student_id = int(known_ids[best_match_index])
+                        name = known_names[best_match_index]
+                        
+                        # Convert distance to human-friendly confidence percentage
+                        # Linear mapping from [0, THRESHOLD] to [100, 60] roughly
+                        confidence = round(max(0, (1.0 - best_dist) * 100), 1)
+                        
+                        # 4. Final Status Determination
+                        if confidence < 60.0:
+                            status_text = "Low Confidence"
+                            color = "#f59e0b" 
+                        else:
+                            # Use mark_cache to check if marked today
+                            # This is a critical stable check
+                            if marked_cache.is_marked(student_id, db):
+                                status_text = "Already Marked"
+                                color = "#10b981" 
+                            else:
+                                status_text = "Attendance Marked"
+                                color = "#3b82f6" # Use blue for "About to mark" or "Potential match"
+                    else:
+                        name = "Unknown"
+                        status_text = "Unknown Face"
+                        color = "#ef4444"
 
-            # Scale locations back up (we resized by 0.5)
+            # Scale locations back up by multiplier 2 (since fx=0.5)
             top, right, bottom, left = [coord * 2 for coord in face_location]
             
             results.append({
                 "name": name,
-                "confidence": round(confidence, 1),
+                "confidence": confidence,
                 "student_id": student_id,
+                "status": status_text,
+                "color": color,
                 "box": {"top": top, "right": right, "bottom": bottom, "left": left}
             })
-
-            # 4. Trigger Attendance if matched (Removed: Frontend now handles this explicitly)
-            # if student_id and confidence >= 60.0:
-            #     ... logic moved to frontend ...
-            pass
 
         return {"faces": results}
 
     except Exception as e:
-        import traceback
-        print(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))

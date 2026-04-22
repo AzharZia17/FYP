@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 import os
 
 from app.database.database import get_db
@@ -13,11 +13,21 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=List[StudentResponse])
-def get_students(db: Session = Depends(get_db)):
+def get_students(
+    department: Optional[str] = None,
+    semester: Optional[int] = None,
+    db: Session = Depends(get_db)
+):
     """
-    Fetch all student records from the database.
+    Fetch all student records from the database with optional categorization filters.
     """
-    return db.query(Student).all()
+    query = db.query(Student)
+    if department:
+        query = query.filter(Student.department == department)
+    if semester:
+        query = query.filter(Student.semester == semester)
+    
+    return query.all()
 
 @router.get("/{student_id}", response_model=StudentResponse)
 def get_student(student_id: int, db: Session = Depends(get_db)):
@@ -32,7 +42,7 @@ def get_student(student_id: int, db: Session = Depends(get_db)):
 @router.post("/", response_model=StudentResponse, status_code=status.HTTP_201_CREATED)
 def create_student(student_data: StudentCreate, db: Session = Depends(get_db)):
     """
-    Create a new student record.
+    Create a new student record with department, semester, and section.
     """
     # Check if roll number already exists
     existing = db.query(Student).filter(Student.roll_number == student_data.roll_number).first()
@@ -42,7 +52,9 @@ def create_student(student_data: StudentCreate, db: Session = Depends(get_db)):
     new_student = Student(
         name=student_data.name,
         roll_number=student_data.roll_number,
-        department=student_data.department
+        department=student_data.department,
+        semester=student_data.semester,
+        section=student_data.section
     )
     db.add(new_student)
     db.commit()
@@ -61,6 +73,13 @@ def update_student(student_id: int, student_data: StudentUpdate, db: Session = D
     # Update fields if provided
     if student_data.name is not None:
         student.name = student_data.name
+    if student_data.department is not None:
+        student.department = student_data.department
+    if student_data.semester is not None:
+        student.semester = student_data.semester
+    if student_data.section is not None:
+        student.section = student_data.section
+        
     if student_data.roll_number is not None:
         # Check uniqueness if roll number is changing
         if student_data.roll_number != student.roll_number:
@@ -68,8 +87,6 @@ def update_student(student_id: int, student_data: StudentUpdate, db: Session = D
             if existing:
                 raise HTTPException(status_code=400, detail="New Roll Number is already assigned to another student.")
         student.roll_number = student_data.roll_number
-    if student_data.department is not None:
-        student.department = student_data.department
 
     db.commit()
     db.refresh(student)
